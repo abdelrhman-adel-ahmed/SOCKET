@@ -22,7 +22,6 @@ server.bind(ADDR) #bind the socket to address take tuple of the address and the 
 so if request comes while handshaking another request it get to the queue ,it min 0 max is os depenent 
 note: the value is advisory may get ignored completly 
 4-accept,return new socket and tuple containg port and address of the client (socket,(addr,port))
-
 note:THERE IS TWO QUEUES ,QUEUE THAT LISTEN USE ,PUT THE INCOMING CONNECTION IN IT ,IF IT CURRENTLY HANDLING 
 A CONNECTION AND BERFORM A 3-WAY HAND SHAK ON EACH REQUEST COMMING ATER THAT THE REQUEST MOVE TO THE SECOND 
 QUEUE WHERE THE ACCEPET FUCNTION PULL ONE CONNECTION FROM THE QUEUE AND RETURN IT ALONG WITH NEW SOCKET TO BE 
@@ -40,7 +39,7 @@ def handle_client(conn,addr):
     conneted =True
     while conneted:
         msg_length = conn.recv(HEADER).decode(FORMAT)
-        if msg_length:
+        if int(msg_length):
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
             if msg == DISCONNET:
@@ -71,4 +70,3 @@ def logic():
 
 print("[statring] server starting ...")
 logic()
-
