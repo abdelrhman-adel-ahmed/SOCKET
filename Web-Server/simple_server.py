@@ -14,13 +14,13 @@ def createServer():
             HTTP/1.1 200 OK
             Content-Type: text/html; charset=utf-8
             
-            Hello World
+            hey 
             your address and port is {address}
             """
             header  = "HTTP/1.1 200 OK\r\n"
             header += "Content-Type: text/plain; charset=utf-8\r\n"
             header += "\r\n"
-            data =header+"Hello World\r\n"
+            data =header+"hey\r\n"
             clientsocket.sendall(data.encode())
             data2=f"your address and port is {address}"
             clientsocket.sendall(data2.encode())
