@@ -12,26 +12,26 @@ if NICKNAME =="admin":
     password=input("enter the password: ")
 
 stop_thread=False
+
 def recevie():
-    global stop_thread  
     while True:
+        global stop_thread  
         if stop_thread:
             break
         try:
             message=client.recv(1024).decode(FORMATE)
             if message =="choose your nickname":
                 client.send(NICKNAME.encode(FORMATE))
-                if NICKNAME=="admin":
-                    next_message=client.recv(1024).decode(FORMATE)
-                    if next_message =="password":
-                        client.send(password.encode(FORMATE))
-                        if client.recv(1024).decode(FORMATE) =="Wrong password":
-                            print("Wrong password, imposter")
-                            stop_thread=True
-                    elif next_message =="YOU HAD A BAAAAAAN":
-                        print("no chat for you")
-                        client.close()
+                next_message=client.recv(1024).decode(FORMATE)
+                if next_message =="password":
+                    client.send(password.encode(FORMATE))
+                    if client.recv(1024).decode(FORMATE) =="Wrong password":
+                        print("Wrong password, imposter")
                         stop_thread=True
+                elif next_message =="YOU HAD A BAAAAAAN":
+                    print("no chat for you")
+                    client.close()
+                    stop_thread=True
             else:
                 print(message)
         except:
@@ -45,24 +45,25 @@ def send():
         if stop_thread:
             break
         message=input()
-        full_message=f"{NICKNAME}:{message}"
+        full_message=f"{NICKNAME}: {message}"
 
-        if NICKNAME=="admin" and (message[:4] =="KICK" or  message[:3]=="BAN"):
+        if NICKNAME=="admin" and (message[:4] =="KICK" or  message[:3]=="BAN" or message[:5]=="UNBAN"):
             if message[:4] =="KICK":
-                client.send(f"KIK {message[5:]}".encode(FORMATE))
-                continue
+                client.send(f"KICK {message[5:]}".encode(FORMATE))
 
             elif message[:3]=="BAN":
                 client.send(f"BAN {message[4:]}".encode(FORMATE))
-                continue
+
+            elif message[:5]=="UNBAN":
+                client.send(f"UNBAN {message[6:]}".encode(FORMATE))
+        else:
+            client.send(full_message.encode(FORMATE))
+
 
         if(message=="dis me"):
             client.send(message.encode(FORMATE))
             client.close()
             break
-
-        client.send(full_message.encode(FORMATE))
-
 
 """
 i/o is blocking by diffult so we use two function one for recive and one for send ,to not get blocked by the 
