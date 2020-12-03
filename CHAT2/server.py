@@ -36,6 +36,7 @@ def receive():
         if nickname =="admin":
             client.send("password".encode(FORMATE))
             password=client.recv(1024).decode(FORMATE)
+
             if password != PASSWORD:
                 client.send("Wrong password".encode(FORMATE))
                 client.close()
@@ -49,45 +50,69 @@ def receive():
 
 def handle_client(client,addr):
     while True:
-        msg = message = client.recv(1024)
-        if(msg.decode(FORMATE).startswith("KICK")):
-            if nicknames[clients.index(client)] =="admin":  
-                name_to_kick=msg.decode(FORMATE)[5:]
-                kick_user(name_to_kick)
-                continue
+        try:
+            msg = message = client.recv(1024)
+            if(msg.decode(FORMATE).startswith("KICK")):
+                if nicknames[clients.index(client)] =="admin":  
+                    name_to_kick=msg.decode(FORMATE)[5:]
+                    print(name_to_kick)
+                    print(msg.decode(FORMATE))
+                    kick_user(name_to_kick)
+                else:
+                    client.send("this command for admin only".encode(FORMATE))
+
+            elif(msg.decode(FORMATE).startswith("BAN")):
+                if nicknames[clients.index(client)] =="admin":  
+                    name_to_Ban=msg.decode(FORMATE)[4:]
+                    kick_user(name_to_Ban)
+
+                    with open('ban.txt','a')as h:
+                        h.write(f"{name_to_Ban}\n")
+                else:
+                    client.send("this command for admin only".encode(FORMATE))
+
+            elif(msg.decode(FORMATE).startswith("UNBAN")):
+                if nicknames[clients.index(client)] =="admin":  
+                    name_to_unBan=msg.decode(FORMATE)[6:]
+                    print(name_to_unBan)
+                    print(msg.decode(FORMATE))
+                    with open("ban.txt") as h:
+                        lines = h.readlines()
+                        for ind, line in enumerate(lines):
+                            if line.startswith(name_to_unBan):
+                                lines[ind] = ""
+                        with open("ban.txt","a") as f:
+                            h.writelines(lines)
+                else:
+                    client.send("this command for admin only".encode(FORMATE))
+
+
+            elif(message.decode(FORMATE)=="dis me"):
+                index=clients.index(client)
+                clients.remove(client)
+                nickname=nicknames[index]
+                borad_cast(f'shity idot {nickname} has just took off'.encode(FORMATE))
+                nicknames.remove(nickname)
+                break
             else:
-                client.send("this command for admin only".encode(FORMATE))
-
-        elif(msg.decode(FORMATE).startswith("BAN")):
-            if nicknames[clients.index(client)] =="admin":  
-                name_to_Ban=msg.decode(FORMATE)[4:]
-                kick_user(name_to_Ban)
-                with open('ban.txt','a')as h:
-                    h.write(f"{name_to_Ban}\n")
-                continue
-            else:
-                 client.send("this command for admin only".encode(FORMATE))
-
-
-        elif(message.decode(FORMATE)=="dis me"):
+                borad_cast(message)
+        except:
             index=clients.index(client)
             clients.remove(client)
             nickname=nicknames[index]
             borad_cast(f'shity idot {nickname} has just took off'.encode(FORMATE))
             nicknames.remove(nickname)
             break
-        borad_cast(message)
-        client.close()
 
 def kick_user(user):
     if user in nicknames:
         name_index=nicknames.index(user)
-        client=clients[name_index]
-        clients.remove(client)
-        client.send("NEXT TIME ... there is not next time :)".encode(FORMATE))
-        client.close()
+        client_to_kick=clients[name_index]
+        clients.remove(client_to_kick)
+        client_to_kick.send("NEXT TIME ... there is not next time :)".encode(FORMATE))
+        client_to_kick.close()  
         nicknames.remove(user) 
-        borad_cast(f"{user} this shity user has get banned")
+        borad_cast(f"{user} get his ass kicked".encode(FORMATE))
 
 
 
