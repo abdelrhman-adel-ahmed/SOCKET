@@ -75,14 +75,12 @@ def handle_client(client,addr):
                 if nicknames[clients.index(client)] =="admin":  
                     name_to_unBan=msg.decode(FORMATE)[6:]
                     print(name_to_unBan)
-                    print(msg.decode(FORMATE))
-                    with open("ban.txt") as h:
-                        lines = h.readlines()
-                        for ind, line in enumerate(lines):
-                            if line.startswith(name_to_unBan):
-                                lines[ind] = ""
-                        with open("ban.txt","a") as f:
-                            h.writelines(lines)
+                    with open("ban.txt", "r") as f:
+                        lines = f.readlines()
+                    with open("ban.txt", "w") as f:
+                        for line in lines:
+                            if line.strip("\n") !=name_to_unBan:
+                                f.write(line)
                 else:
                     client.send("this command for admin only".encode(FORMATE))
 
