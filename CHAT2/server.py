@@ -23,8 +23,13 @@ def receive():
         client,addr=server.accept()
         print(f"[NEW CONNECTION WITH]: {addr}")
         client.send("choose your nickname".encode(FORMATE))
-        nickname=client.recv(1024).decode(FORMATE)   
-
+        try:
+            nickname=client.recv(1024).decode(FORMATE)   
+        except :
+            client.close()
+            print("malicious clien disconnected")
+            continue
+            
         with open('ban.txt','r') as h:
             bans=h.readlines()
              
