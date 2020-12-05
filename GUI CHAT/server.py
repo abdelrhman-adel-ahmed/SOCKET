@@ -109,7 +109,7 @@ def handle_client(client,addr):
             clients.remove(client)
             nickname=nicknames[index]
             borad_cast(f'shity idot {nickname} has just took off'.encode(FORMATE))
-            print(f"[nicknames] discounnected")
+            print(f"[{nickname}] discounnected")
             nicknames.remove(nickname)
             break
 
@@ -120,7 +120,7 @@ def kick_user(user):
         clients.remove(client_to_kick)
         client_to_kick.send("NEXT TIME ... there is not next time :)".encode(FORMATE))
         client_to_kick.close()  
-        print(f"[nicknames] discounnected")
+        print(f"[{user}] discounnected")
         nicknames.remove(user) 
         borad_cast(f"{user} get his ass kicked".encode(FORMATE))
 
