@@ -1,4 +1,0 @@
-using threading to deal with blocking (all socket methods are blockiiiiiing:For example, when it reads from a socket or writes to it the program can't 
-do anything else) so two sloution to this :
-1- threading which is not cheap operation 
-2- use asynchronous way to deal with that (using selector)
